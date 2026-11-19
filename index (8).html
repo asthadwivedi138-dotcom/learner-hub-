@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LearnHub - Online Learning Management System</title>
+<style>
+  :root{--bg:#0f172a;--card:#1e293b;--accent:#38bdf8;--accent2:#ffd166;--text:#e2e8f0;--muted:#94a3b8;--good:#22c55e;--bad:#ef4444}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+  header{position:sticky;top:0;z-index:10;background:#0b1220;border-bottom:1px solid #334155;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;padding:12px 20px}
+  header h1{font-size:1.4rem;color:var(--accent)}
+  nav a{color:var(--text);text-decoration:none;margin-left:16px;font-size:.95rem}
+  nav a:hover{color:var(--accent)}
+  .container{max-width:1000px;margin:0 auto;padding:20px}
+  .card{background:var(--card);border-radius:12px;padding:20px;margin-bottom:24px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+  .hero{text-align:center;padding:50px 20px}
+  .hero h2{font-size:2rem;margin-bottom:10px}
+  .hero p{color:var(--muted);margin-bottom:20px}
+  button,.btn{background:var(--accent);color:#04202e;border:0;border-radius:8px;padding:10px 18px;font-size:1rem;cursor:pointer;font-weight:600}
+  button:hover{opacity:.9}
+  h3{margin:18px 0 8px;color:var(--accent)}
+  p{margin-bottom:10px}
+  ul{margin:0 0 10px 22px}
+  pre{background:#0b1220;border:1px solid #334155;border-radius:8px;padding:12px;overflow-x:auto;margin:10px 0;font-size:.88rem}
+  code{font-family:Consolas,monospace;color:#a5f3fc}
+  .course-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+  .course{background:#0b1220;border:1px solid #334155;border-radius:10px;padding:16px;text-align:center}
+  .course h4{color:var(--accent2);margin-bottom:6px}
+  @media (max-width:768px){.course-grid{grid-template-columns:1fr}nav a{margin:0 10px 0 0}}
+  .module-header{background:#0b1220;border:2px solid var(--accent);border-radius:8px;padding:12px 14px;margin:10px 0;cursor:pointer;font-weight:600}
+  .module-header:hover{background:#13213a}
+  .module-content{display:none;padding:6px 4px 10px}
+  .module-content.open{display:block}
+  .q-box{background:#0b1220;border-left:4px solid var(--accent);border-radius:6px;padding:10px 12px;margin:8px 0}
+  .quiz-q{background:#0b1220;border-radius:8px;padding:12px;margin:10px 0}
+  .quiz-q label{display:block;margin:4px 0;cursor:pointer}
+  .quiz-q.correct{border:1px solid var(--good)}
+  .quiz-q.wrong{border:1px solid var(--bad)}
+  .quiz-q .fb{font-size:.9rem;margin-top:6px}
+  .result{margin-top:12px;font-weight:700;font-size:1.1rem;color:var(--accent2)}
+  .progress{height:10px;background:#0b1220;border-radius:6px;overflow:hidden;margin-top:8px}
+  .progress div{height:100%;width:0;background:var(--good);transition:width .4s}
+  input[type=text],input[type=email],input[type=password],textarea{width:100%;padding:10px;margin:6px 0 12px;border-radius:8px;border:1px solid #334155;background:#0b1220;color:var(--text)}
+  .err{color:var(--bad);font-size:.9rem;margin-top:-8px;margin-bottom:8px;min-height:1em}
+  footer{text-align:center;color:var(--muted);padding:24px;border-top:1px solid #334155}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎓 LearnHub</h1>
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#notes">Notes</a>
+    <a href="#assignments">Assignments</a>
+    <a href="#quizzes">Quizzes</a>
+    <a href="#register">Register</a>
+  </nav>
+</header>
+
+<div class="container">
+
+<!-- HOME -->
+<section id="home" class="card hero">
+  <h2>Welcome to LearnHub</h2>
+  <p>An Online Learning Management System for C, Python, Java and Web Technology.</p>
+  <button id="welcomeBtn">Get Started</button>
+  <p id="welcomeMsg" style="margin-top:14px;color:var(--accent2)"></p>
+  <div class="course-grid" style="margin-top:24px">
+    <div class="course"><h4>C Programming</h4><p>Structures, pointers, files</p></div>
+    <div class="course"><h4>Python</h4><p>OOP, data types, Flask</p></div>
+    <div class="course"><h4>Java</h4><p>OOP, threads, JDBC</p></div>
+  </div>
+  <div style="margin-top:20px;text-align:left">
+    <b>Your quiz progress</b>
+    <div class="progress"><div id="progressBar"></div></div>
+    <small id="progressText" style="color:var(--muted)">No quizzes completed yet.</small>
+  </div>
+</section>
+
+<!-- NOTES -->
+<section id="notes" class="card section">
+  <h3 style="margin-top:0">📚 2. Notes - Web Technology</h3>
+  <div class="module-header" onclick="toggleModule('notes-web')">📘 Web Technology Notes (Topics 1-24) ▼</div>
+  <div id="notes-web" class="module-content">
+
+      <h3>1. Introduction to Web Technology</h3>
+      <p>Web technology covers the tools and standards used to build and deliver websites and web applications. The main building blocks are HTML for structure, CSS for presentation, and JavaScript for behavior, supported by browsers, servers, and protocols such as HTTP.</p>
+
+      <h3>2. HTML Basics</h3>
+      <p>HTML (HyperText Markup Language) describes the structure of a web page using elements written as tags. Every page has a document type declaration, an <code>html</code> element, a <code>head</code> and a <code>body</code>.</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;My Page&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Hello&lt;/h1&gt;
+    &lt;p&gt;This is a paragraph.&lt;/p&gt;
+    &lt;a href="https://example.com"&gt;A link&lt;/a&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+      <h3>3. HTML Forms and Tables</h3>
+      <p>Forms collect user input using elements such as <code>input</code>, <code>select</code>, <code>textarea</code> and <code>button</code>. Tables display tabular data using <code>table</code>, <code>tr</code>, <code>th</code> and <code>td</code>.</p>
+<pre><code>&lt;form action="/register" method="post"&gt;
+    &lt;label for="name"&gt;Name&lt;/label&gt;
+    &lt;input type="text" id="name" name="name" required&gt;
+    &lt;button type="submit"&gt;Submit&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;table&gt;
+    &lt;tr&gt;&lt;th&gt;Course&lt;/th&gt;&lt;th&gt;Credits&lt;/th&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;Python&lt;/td&gt;&lt;td&gt;4&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</code></pre>
+
+      <h3>4. CSS Basics</h3>
+      <p>CSS (Cascading Style Sheets) controls colors, fonts, spacing and layout. CSS can be applied inline, in a <code>style</code> element, or from an external stylesheet, which is the recommended approach for larger sites.</p>
+<pre><code>body { font-family: Arial, sans-serif; background: #f5f5f5; }
+h1   { color: navy; text-align: center; }</code></pre>
+
+      <h3>5. CSS Selectors and Box Model</h3>
+      <p>Selectors choose which elements to style: element (<code>p</code>), class (<code>.card</code>), id (<code>#menu</code>), and combinations. The box model describes how every element is made of content, padding, border and margin.</p>
+<pre><code>.card {
+    width: 300px;
+    padding: 16px;
+    border: 1px solid #ccc;
+    margin: 10px;
+    box-sizing: border-box;
+}</code></pre>
+
+      <h3>6. CSS Flexbox</h3>
+      <p>Flexbox is a one-dimensional layout system for arranging items in a row or column, with control over alignment, spacing and wrapping.</p>
+<pre><code>.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}</code></pre>
+
+      <h3>7. CSS Grid</h3>
+      <p>CSS Grid is a two-dimensional layout system that arranges content in rows and columns. It is well suited to dashboards and card layouts.</p>
+<pre><code>.dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}</code></pre>
+
+      <h3>8. Introduction to JavaScript</h3>
+      <p>JavaScript is the programming language of the browser. It adds behavior to pages: reacting to clicks, validating forms, updating content and communicating with servers. It can also run on servers using Node.js.</p>
+<pre><code>&lt;script&gt;
+    console.log("Hello from JavaScript");
+&lt;/script&gt;</code></pre>
+
+      <h3>9. Variables and Data Types</h3>
+      <p>Variables are declared with <code>let</code> (changeable) or <code>const</code> (not reassignable). Common data types are string, number, boolean, null, undefined, object and array.</p>
+<pre><code>const course = "Python";
+let students = 40;
+let active = true;
+const topics = ["Basics", "OOP", "Files"];</code></pre>
+
+      <h3>10. Operators and Conditions</h3>
+      <p>Operators perform calculations and comparisons. Prefer strict equality (<code>===</code>) to avoid unexpected type conversion. Conditions use <code>if</code>, <code>else if</code>, <code>else</code> and <code>switch</code>.</p>
+<pre><code>let marks = 72;
+if (marks &gt;= 75) {
+    console.log("Distinction");
+} else if (marks &gt;= 40) {
+    console.log("Pass");
+} else {
+    console.log("Fail");
+}</code></pre>
+
+      <h3>11. Loops</h3>
+      <p>Loops repeat a block of code. Common forms are <code>for</code>, <code>while</code>, <code>do...while</code> and <code>for...of</code>.</p>
+<pre><code>const courses = ["C", "Python", "Java"];
+for (const c of courses) {
+    console.log(c);
+}</code></pre>
+
+      <h3>12. Functions</h3>
+      <p>A function is a reusable block of code. JavaScript supports function declarations, function expressions and arrow functions.</p>
+<pre><code>function greet(name) {
+    return "Hello, " + name;
+}
+const square = n =&gt; n * n;
+console.log(greet("Astha"), square(5));</code></pre>
+
+      <h3>13. Arrays and Objects</h3>
+      <p>Arrays store ordered lists of values; objects store key-value pairs. Methods like <code>map</code>, <code>filter</code> and <code>forEach</code> make working with arrays concise.</p>
+<pre><code>const student = { id: 1, name: "Astha", courses: ["C", "Python"] };
+const upper = student.courses.map(c =&gt; c.toUpperCase());
+console.log(upper);</code></pre>
+
+      <h3>14. DOM Manipulation</h3>
+      <p>The Document Object Model (DOM) represents an HTML page as a tree of objects. JavaScript can read and change elements, attributes, styles and text through this tree.</p>
+<pre><code>&lt;p id="msg"&gt;Click the button&lt;/p&gt;
+&lt;button id="btn"&gt;Click Me&lt;/button&gt;
+
+&lt;script&gt;
+document.getElementById("btn").addEventListener("click", function() {
+    document.getElementById("msg").textContent =
+        "Welcome to LearnHub!";
+});
+&lt;/script&gt;</code></pre>
+      <p>When the button is clicked, JavaScript finds the paragraph and changes its text. DOM manipulation is useful for interactive dashboards, expandable notes, menus, form feedback, and dynamically updated course lists.</p>
+
+      <h3>15. JavaScript Events and Form Validation</h3>
+      <p>An event is an action or occurrence that a browser can detect. Examples include clicking a button, typing into a field, submitting a form, loading a page, or changing a selected value. JavaScript event handlers allow a website to respond to these actions.</p>
+      <p>Form validation checks whether submitted information follows the expected rules. For example, a registration form may require a name, a valid email address, and a password of sufficient length. HTML attributes such as required, type="email", and minlength can provide basic browser validation, while JavaScript can implement additional checks.</p>
+<pre><code>&lt;form id="loginForm"&gt;
+    &lt;input id="email" type="email"
+           placeholder="Enter email" required&gt;
+    &lt;button type="submit"&gt;Login&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;script&gt;
+document.getElementById("loginForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const email = document.getElementById("email").value;
+
+    if (email.trim() === "") {
+        alert("Please enter your email");
+    } else {
+        alert("Form submitted for validation");
+    }
+});
+&lt;/script&gt;</code></pre>
+      <p>The preventDefault() method stops the form's normal submission so the script can perform its own checks. Client-side validation improves usability, but it is not a substitute for server-side validation because users can bypass browser checks.</p>
+
+      <h3>16. Responsive Web Design</h3>
+      <p>Responsive Web Design is an approach in which a website adjusts its layout and content to different screen sizes and devices. A responsive page should remain usable on mobile phones, tablets, laptops, and desktop computers.</p>
+      <p>Responsive design commonly uses flexible layouts, relative units, responsive images, and CSS media queries. The viewport meta tag helps mobile browsers display pages at the device's actual width instead of using a wider virtual layout.</p>
+<pre><code>&lt;meta name="viewport"
+      content="width=device-width, initial-scale=1.0"&gt;
+
+&lt;style&gt;
+.course-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+@media (max-width: 768px) {
+    .course-grid {
+        grid-template-columns: 1fr;
+    }
+}
+&lt;/style&gt;</code></pre>
+      <p>In this example, the course grid displays three columns on wider screens and one column when the viewport is 768 pixels wide or narrower. Responsive layouts improve readability, navigation, and usability across devices.</p>
+
+      <h3>17. Web Browsers and Web Servers</h3>
+      <p>A web browser is software used to request, retrieve, and display web content. Examples include Google Chrome, Mozilla Firefox, Microsoft Edge, and Safari. A browser interprets HTML, CSS, and JavaScript to render an interactive page for the user.</p>
+      <p>A web server is a system or software that receives HTTP requests and sends responses. The response may contain an HTML page, an image, a stylesheet, JavaScript, or data in a format such as JSON. Web servers can also forward requests to application code that accesses databases or performs business logic.</p>
+      <p>For example, when a student opens an online learning website, the browser sends a request to the server. The server returns the requested page or data, and the browser renders the content. Some content may be generated dynamically based on the user's account or selected course.</p>
+
+      <h3>18. HTTP and HTTPS</h3>
+      <p>HTTP stands for HyperText Transfer Protocol. It defines how web clients and servers exchange requests and responses. A request may ask for a page, submit form information, or retrieve data from an API. A response contains a status code and may include the requested content.</p>
+      <p>HTTPS is HTTP protected by TLS encryption. It helps protect data while it travels between a browser and a server, verifies the server's identity through its certificate, and helps detect unauthorized changes to transmitted data.</p>
+      <p>Common HTTP methods include GET for retrieving information, POST for submitting data, PUT or PATCH for updating resources, and DELETE for requesting resource removal. Common status codes include 200 for success, 404 for a resource not found, and 500 for a server error.</p>
+      <p>Websites that handle login details, personal information, or payments should use HTTPS. However, HTTPS alone does not guarantee that a website is trustworthy or that its application is free from security vulnerabilities.</p>
+
+      <h3>19. Client-Side and Server-Side Development</h3>
+      <p>Client-side development refers to code that runs in the user's browser. HTML, CSS, and browser JavaScript are commonly used to build the interface, respond to interactions, and display data. Client-side code can improve responsiveness because some actions can happen without a full page reload.</p>
+      <p>Server-side development refers to code that runs on a server. It can authenticate users, apply business rules, validate submitted data, communicate with databases, and return pages or API responses. Common server-side technologies include Python, Java, PHP, JavaScript with Node.js, and others.</p>
+      <p>For an online learning management system, the client side may display courses and notes, while the server side verifies a user's account, stores course progress, and retrieves saved information from a database. Many modern applications combine both approaches.</p>
+      <p>Security-sensitive logic and access checks must be enforced on the server. Hiding a button in the browser does not prevent a user from attempting the underlying action directly.</p>
+
+      <h3>20. Web APIs and Fetch API</h3>
+      <p>An API, or Application Programming Interface, defines how different software components communicate. A web API allows a browser or another application to request data or perform operations on a server. APIs often exchange data in JSON format.</p>
+      <p>The Fetch API is a browser feature used to make HTTP requests from JavaScript. It returns a Promise, allowing the program to handle responses asynchronously. Developers commonly check whether a response was successful, convert JSON response data, and handle errors.</p>
+<pre><code>fetch("https://jsonplaceholder.typicode.com/posts/1")
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Request failed");
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log(data.title);
+    })
+    .catch(error => {
+        console.error("Error:", error);
+    });</code></pre>
+      <p>This example requests a sample post, checks the response, converts it into a JavaScript object, and prints its title. Real applications should handle network failures, loading states, permissions, and invalid responses appropriately.</p>
+
+      <h3>21. Local Storage and Session Storage</h3>
+      <p>Web Storage allows a browser to store small amounts of key-value data for a website. Local Storage generally keeps data until it is removed, while Session Storage is associated with a particular browser tab session and is normally cleared when that session ends.</p>
+      <p>Both APIs store values as strings. Objects can be converted to JSON before saving and parsed when retrieved. These storage mechanisms are useful for preferences, temporary interface state, and simple client-side settings.</p>
+<pre><code>localStorage.setItem("theme", "dark");
+
+const selectedTheme = localStorage.getItem("theme");
+console.log(selectedTheme);
+
+sessionStorage.setItem("currentCourse", "Python");
+
+const course = sessionStorage.getItem("currentCourse");
+console.log(course);</code></pre>
+      <p>Local Storage and Session Storage are not secure databases and should not be used to store passwords or sensitive secrets. Client-side data can be read or modified by scripts running on the same origin, so applications must consider security and privacy carefully.</p>
+
+      <h3>22. Website Security Basics</h3>
+      <p>Website security involves protecting users, data, and services against unauthorized access and malicious activity. Security is important for websites that process login information, student records, payments, or personal details.</p>
+      <ul>
+        <li><b>HTTPS:</b> Protects information transmitted between the browser and server using TLS.</li>
+        <li><b>Authentication:</b> Verifies a user's identity, commonly through a login system.</li>
+        <li><b>Authorization:</b> Determines which resources and actions an authenticated user is allowed to access.</li>
+        <li><b>Input validation:</b> Checks submitted information for expected types, formats, and limits.</li>
+        <li><b>Output encoding:</b> Helps prevent untrusted content from being interpreted as executable HTML or script.</li>
+        <li><b>Secure password storage:</b> Passwords should be stored using appropriate password-hashing methods rather than plain text.</li>
+        <li><b>Access control:</b> Sensitive actions and data must be protected by server-side permission checks.</li>
+      </ul>
+      <p>Security requires multiple layers of protection. Developers should keep software updated, handle errors carefully, limit access to sensitive information, and test their applications for common vulnerabilities.</p>
+
+      <h3>23. Accessibility in Web Development</h3>
+      <p>Web accessibility means designing websites so that people with different abilities can use them. This includes users who rely on keyboards, screen readers, magnification, captions, or other assistive technologies.</p>
+      <p>Accessible websites use meaningful headings, labels for form controls, alternative text for informative images, readable color contrast, and clear navigation. Interactive components should support keyboard use and provide understandable focus indicators.</p>
+<pre><code>&lt;label for="studentEmail"&gt;Email Address&lt;/label&gt;
+&lt;input
+    type="email"
+    id="studentEmail"
+    name="email"
+    required
+&gt;
+
+&lt;img src="course.jpg"
+     alt="Students learning in a classroom"&gt;</code></pre>
+      <p>The label connects the text to the email input, and the alt attribute provides a text alternative for the image. Accessibility benefits many users and improves the overall usability of a website.</p>
+
+      <h3>24. Advantages and Applications of Web Technology</h3>
+      <p>Web technology has transformed how people access information, communicate, learn, and conduct business. Websites and web applications can be accessed from different devices through a browser, reducing the need to install separate applications for every platform.</p>
+      <ul>
+        <li><b>Education:</b> Learning management systems provide online courses, notes, assignments, quizzes, and progress tracking.</li>
+        <li><b>Business:</b> Companies use web applications for customer service, inventory, sales, and internal operations.</li>
+        <li><b>Communication:</b> Web technologies support email, messaging, video meetings, and collaboration tools.</li>
+        <li><b>E-commerce:</b> Online stores display products, manage shopping carts, and process orders.</li>
+        <li><b>Healthcare:</b> Web applications can support appointment scheduling and access to authorized information.</li>
+        <li><b>Government services:</b> Websites allow users to access forms, information, and digital services.</li>
+        <li><b>Entertainment:</b> Streaming services, online games, and digital media platforms use web technologies.</li>
+      </ul>
+      <p>Web technology makes information sharing and service delivery more convenient. Successful web applications still require reliable hosting, good performance, accessibility, security, maintenance, and a user-friendly design.</p>
+
+  </div>
+</section>
+
+<!-- ASSIGNMENTS -->
+<section id="assignments" class="card section">
+  <h3 style="margin-top:0">📝 3. Assignments - Click to Open Module</h3>
+
+  <div class="module-header" onclick="toggleModule('c-mod')">📁 Assignment 1: C Programming ▼</div>
+  <div id="c-mod" class="module-content">
+    <div class="q-box">Q1. Write a C program to manage student records in LMS using structures. Store student_id, name and enrolled courses.</div>
+    <div class="q-box">Q2. Explain pointers with example. Write a C program to swap course titles using pointers.</div>
+    <div class="q-box">Q3. Write a program to implement file handling in C for storing and retrieving assignment submissions.</div>
+    <div class="q-box">Q4. What is dynamic memory allocation? Demonstrate malloc() and free() with an LMS example.</div>
+    <div class="q-box">Q5. Write a C program to sort courses by course_id using bubble sort.</div>
+  </div>
+
+  <div class="module-header" onclick="toggleModule('py-mod')">📁 Assignment 2: Python Programming ▼</div>
+  <div id="py-mod" class="module-content">
+    <div class="q-box">Q1. Create a Python class LMS with attributes student, course and instructor. Add enroll(), submit_assignment() and display_info() methods.</div>
+    <div class="q-box">Q2. Explain list, tuple and dictionary with LMS examples. Write a program to store and search course materials using a dictionary.</div>
+    <div class="q-box">Q3. Write a Python program using file handling to save and read student login data from a text file.</div>
+    <div class="q-box">Q4. What is exception handling? Write a program to handle invalid input using try-except.</div>
+    <div class="q-box">Q5. Explain how Python Flask/Django can be used as the backend for an Online Learning Management System.</div>
+  </div>
+
+  <div class="module-header" onclick="toggleModule('java-mod')">📁 Assignment 3: Java Programming ▼</div>
+  <div id="java-mod" class="module-content">
+    <div class="q-box">Q1. Explain OOP concepts: Inheritance, Polymorphism, Encapsulation and Abstraction with LMS examples.</div>
+    <div class="q-box">Q2. Write a Java program to create a Course class with constructor overloading.</div>
+    <div class="q-box">Q3. Implement multithreading in Java to handle multiple tasks in an LMS.</div>
+    <div class="q-box">Q4. What is JDBC? Explain the steps to connect an LMS with a MySQL database.</div>
+    <div class="q-box">Q5. Design an LMS login page interface using Swing/AWT.</div>
+  </div>
+
+  <div class="module-header" onclick="toggleModule('web-mod')">📁 Assignment 4: Web Technology ▼</div>
+  <div id="web-mod" class="module-content">
+    <div class="q-box">Q1. Design the homepage of an Online Learning Management System using HTML5 and CSS3.</div>
+    <div class="q-box">Q2. Write JavaScript code for form validation on a student registration page.</div>
+    <div class="q-box">Q3. Explain session storage and local storage with JavaScript examples.</div>
+    <div class="q-box">Q4. Create a responsive course dashboard using CSS Flexbox/Grid.</div>
+    <div class="q-box">Q5. Explain how frontend HTML/CSS/JavaScript communicates with a backend using the Fetch API.</div>
+  </div>
+</section>
+
+<!-- QUIZZES -->
+<section id="quizzes" class="card section">
+  <h3 style="margin-top:0">🧠 4. Quiz Section</h3>
+
+  <div class="module-header" onclick="toggleModule('quiz-c')" style="border-color:#ffd166">🎯 Quiz 1: C Programming ▼</div>
+  <div id="quiz-c" class="module-content"></div>
+
+  <div class="module-header" onclick="toggleModule('quiz-py')" style="border-color:#ffd166">🎯 Quiz 2: Python Programming ▼</div>
+  <div id="quiz-py" class="module-content"></div>
+
+  <div class="module-header" onclick="toggleModule('quiz-java')" style="border-color:#ffd166">🎯 Quiz 3: Java Programming ▼</div>
+  <div id="quiz-java" class="module-content"></div>
+
+  <div class="module-header" onclick="toggleModule('quiz-web')" style="border-color:#ffd166">🎯 Quiz 4: Web Technology ▼</div>
+  <div id="quiz-web" class="module-content"></div>
+</section>
+
+<!-- REGISTER -->
+<section id="register" class="card section">
+  <h3 style="margin-top:0">👤 5. Student Registration</h3>
+  <form id="regForm" novalidate>
+    <label for="rname">Full Name</label>
+    <input type="text" id="rname" placeholder="Enter your name">
+    <div class="err" id="errName"></div>
+
+    <label for="remail">Email Address</label>
+    <input type="email" id="remail" placeholder="Enter your email">
+    <div class="err" id="errEmail"></div>
+
+    <label for="rpass">Password (min 6 characters)</label>
+    <input type="password" id="rpass" placeholder="Enter password">
+    <div class="err" id="errPass"></div>
+
+    <button type="submit">Register</button>
+    <p id="regMsg" style="margin-top:12px"></p>
+  </form>
+</section>
+
+</div>
+
+<footer>© 2026 LearnHub - Online Learning Management System</footer>
+
+<script>
+/* ---------- Collapsible modules ---------- */
+function toggleModule(id){
+  var el = document.getElementById(id);
+  if(el) el.classList.toggle("open");
+}
+
+/* ---------- Welcome button (DOM manipulation) ---------- */
+document.getElementById("welcomeBtn").addEventListener("click", function(){
+  document.getElementById("welcomeMsg").textContent = "Welcome to LearnHub!";
+});
+
+/* ---------- Quiz data ---------- */
+var quizzes = {
+  "quiz-c": { title:"C Programming", key:"c", qs:[
+    {q:"What is a structure in C?", o:["Loop statement","User-defined data type","Operator","Header file"], a:1},
+    {q:"Which header file contains malloc()?", o:["stdlib.h","stdio.h","string.h","math.h"], a:0},
+    {q:"Which symbol ends a C statement?", o:[":",";",",","."], a:1},
+    {q:"Which function is the usual entry point in C?", o:["main()","start()","run()","begin()"], a:0},
+    {q:"Which format specifier is used for an int?", o:["%f","%d","%c","%s"], a:1},
+    {q:"Which loop checks its condition before execution?", o:["while","do-while","Neither loop","Both always execute once"], a:0},
+    {q:"Which operator gives the remainder?", o:["/","%","*","+"], a:1},
+    {q:"Which keyword returns a value from a function?", o:["return","break","continue","goto"], a:0},
+    {q:"Array indexing in C normally starts at?", o:["1","0","-1","2"], a:1},
+    {q:"Which function releases dynamically allocated memory?", o:["delete()","remove()","free()","clear()"], a:2}
+  ]},
+  "quiz-py": { title:"Python Programming", key:"py", qs:[
+    {q:"Which keyword defines a function in Python?", o:["function","def","fun","define"], a:1},
+    {q:"Which data type is immutable?", o:["list","dictionary","tuple","set"], a:2},
+    {q:"Which symbol starts a single-line comment?", o:["//","#","/*","--"], a:1},
+    {q:"Which block handles exceptions?", o:["try-except","catch-throw","do-catch","error-handle"], a:0},
+    {q:"What does len([1,2,3]) return?", o:["2","3","4","Error"], a:1}
+  ]},
+  "quiz-java": { title:"Java Programming", key:"java", qs:[
+    {q:"Which keyword is used for inheritance in Java?", o:["implements","extends","inherits","super"], a:1},
+    {q:"Which method is the entry point of a Java program?", o:["start()","run()","main()","init()"], a:2},
+    {q:"What does JDBC stand for?", o:["Java Data Build Connector","Java Database Connectivity","Java Direct Base Code","Java Domain Binding Class"], a:1},
+    {q:"Which keyword creates an object?", o:["create","new","object","make"], a:1},
+    {q:"Which interface is commonly implemented to create a thread?", o:["Runnable","Serializable","Comparable","Cloneable"], a:0}
+  ]},
+  "quiz-web": { title:"Web Technology", key:"web", qs:[
+    {q:"Which HTML tag creates a hyperlink?", o:["<link>","<a>","<href>","<url>"], a:1},
+    {q:"Which CSS feature applies styles at specific screen widths?", o:["Media queries","Pseudo-classes","Animations","Variables"], a:0},
+    {q:"Which method stops a form's default submission?", o:["stopForm()","preventDefault()","cancel()","halt()"], a:1},
+    {q:"Which storage clears when the tab session ends?", o:["localStorage","sessionStorage","cookies only","IndexedDB"], a:1},
+    {q:"Which HTTP status code means 'Not Found'?", o:["200","301","404","500"], a:2}
+  ]}
+};
+
+function loadScores(){
+  try { return JSON.parse(localStorage.getItem("learnhubScores") || "{}"); }
+  catch(e){ return {}; }
+}
+function saveScore(key, score, total){
+  try {
+    var s = loadScores();
+    s[key] = {score:score, total:total};
+    localStorage.setItem("learnhubScores", JSON.stringify(s));
+  } catch(e){}
+  updateProgress();
+}
+function updateProgress(){
+  var s = loadScores();
+  var done = Object.keys(s).length;
+  var totalQuizzes = Object.keys(quizzes).length;
+  document.getElementById("progressBar").style.width = (done/totalQuizzes*100) + "%";
+  document.getElementById("progressText").textContent =
+    done === 0 ? "No quizzes completed yet." : done + " of " + totalQuizzes + " quizzes completed.";
+}
+
+/* ---------- Render quizzes ---------- */
+function renderQuiz(containerId, quiz){
+  var box = document.getElementById(containerId);
+  var letters = ["A","B","C","D"];
+  var html = "";
+  quiz.qs.forEach(function(item, i){
+    var name = quiz.key + (i+1);
+    html += '<div class="quiz-q" id="' + name + '-box"><b>Q' + (i+1) + '. ' +
+            item.q.replace(/</g,"&lt;").replace(/>/g,"&gt;") + '</b><br>';
+    item.o.forEach(function(opt, j){
+      html += '<label><input type="radio" name="' + name + '" value="' + j + '" style="width:auto"> ' +
+              letters[j] + ') ' + opt.replace(/</g,"&lt;").replace(/>/g,"&gt;") + '</label>';
+    });
+    html += '<div class="fb" id="' + name + '-fb"></div></div>';
+  });
+  html += '<button onclick="submitQuiz(\'' + containerId + '\')">Submit Quiz</button> ';
+  html += '<button onclick="resetQuiz(\'' + containerId + '\')" style="background:#475569;color:#fff">Reset</button>';
+  html += '<div class="result" id="' + quiz.key + '-result"></div>';
+  box.innerHTML = html;
+}
+
+function submitQuiz(containerId){
+  var quiz = quizzes[containerId], score = 0, letters = ["A","B","C","D"];
+  quiz.qs.forEach(function(item, i){
+    var name = quiz.key + (i+1);
+    var box = document.getElementById(name + "-box");
+    var fb = document.getElementById(name + "-fb");
+    var chosen = document.querySelector('input[name="' + name + '"]:checked');
+    box.classList.remove("correct","wrong");
+    if(chosen && parseInt(chosen.value,10) === item.a){
+      score++; box.classList.add("correct"); fb.textContent = "✅ Correct";
+    } else {
+      box.classList.add("wrong");
+      fb.textContent = (chosen ? "❌ Wrong" : "⚠️ Not answered") + " — Correct answer: " + letters[item.a];
+    }
+  });
+  document.getElementById(quiz.key + "-result").textContent =
+    "Your score: " + score + " / " + quiz.qs.length;
+  saveScore(quiz.key, score, quiz.qs.length);
+}
+
+function resetQuiz(containerId){
+  var quiz = quizzes[containerId];
+  renderQuiz(containerId, quiz);
+}
+
+Object.keys(quizzes).forEach(function(id){ renderQuiz(id, quizzes[id]); });
+updateProgress();
+
+/* ---------- Registration form validation ---------- */
+document.getElementById("regForm").addEventListener("submit", function(event){
+  event.preventDefault();
+  var name = document.getElementById("rname").value.trim();
+  var email = document.getElementById("remail").value.trim();
+  var pass = document.getElementById("rpass").value;
+  var ok = true;
+
+  document.getElementById("errName").textContent = "";
+  document.getElementById("errEmail").textContent = "";
+  document.getElementById("errPass").textContent = "";
+  document.getElementById("regMsg").textContent = "";
+
+  if(name === ""){ document.getElementById("errName").textContent = "Please enter your name"; ok = false; }
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ document.getElementById("errEmail").textContent = "Please enter a valid email"; ok = false; }
+  if(pass.length < 6){ document.getElementById("errPass").textContent = "Password must be at least 6 characters"; ok = false; }
+
+  if(ok){
+    try { sessionStorage.setItem("currentStudent", name); } catch(e){}
+    var msg = document.getElementById("regMsg");
+    msg.style.color = "#22c55e";
+    msg.textContent = "Registration successful. Welcome, " + name + "!";
+    this.reset();
+  }
+});
+</script>
+</body>
+</html>
